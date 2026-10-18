@@ -110,8 +110,8 @@ exports.handler = async (event) => {
           amount: total,
           currency: "ZAR",
           successUrl: baseUrl + "/?payment=success",
+         cancelUrl: baseUrl + "/?payment=cancelled",,
           failureUrl: baseUrl + "/?payment=failed",
-          failureUrl: `${baseUrl}/?payment=failed`,
           metadata: {
             store: "RAILWAY",
           },
