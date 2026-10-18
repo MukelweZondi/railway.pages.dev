@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1879,28 +1878,55 @@
       input.addEventListener("change", updateCheckoutTotals);
     });
 
-    document.getElementById("checkoutForm").addEventListener("submit", event => {
-      event.preventDefault();
+   ```
+document.getElementById("checkoutForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-      if (!cart.length) {
-        showView("cart");
-        notify("Your bag is empty.");
-        return;
-      }
+  if (!cart.length) {
+    showView("cart");
+    notify("Your bag is empty.");
+    return;
+  }
 
-      if (!event.currentTarget.reportValidity()) return;
+  const form = event.currentTarget;
+  if (!form.reportValidity()) return;
 
-      alert(
-        "This is a checkout preview only. Your order has NOT been placed and no payment has been taken.\n\n" +
-        "Estimated total: " + money(subtotal() + selectedDelivery()) +
-        "\n\nConnect a secure payment provider and order system before launch."
-      );
+  const button = form.querySelector('button[type="submit"]');
+  const originalText = button ? button.textContent : "";
+
+  try {
+    if (button) {
+      button.disabled = true;
+      button.textContent = "Connecting to Yoco...";
+    }
+
+    const response = await fetch("/.netlify/functions/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: cart.map(item => ({
+          id: item.id,
+          quantity: item.quantity
+        })),
+        delivery: document.querySelector('input[name="delivery"]:checked')?.value || "standard"
+      })
     });
 
-    document.getElementById("contactForm").addEventListener("submit", event => {
-      event.preventDefault();
+    const result = await response.json();
 
-      if (!event.currentTarget.reportValidity()) return;
+    if (!response.ok || !result.redirectUrl) {
+      throw new Error(result.error || "Unable to start checkout.");
+    }
+
+    window.location.href = result.redirectUrl;
+  } catch (error) {
+    alert(error.message || "Checkout failed. Please try again.");
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  }
+});
 
       const form = new FormData(event.currentTarget);
       const message = [
