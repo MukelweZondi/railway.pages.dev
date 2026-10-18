@@ -103,14 +103,14 @@ exports.handler = async (event) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${secretKey}`,
+          Authorization: "Bearer " + secretKey,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           amount: total,
           currency: "ZAR",
-          successUrl: `${baseUrl}/?payment=success`,
-          cancelUrl: `${baseUrl}/?payment=cancelled`,
+          successUrl: baseUrl + "/?payment=success",
+          failureUrl: baseUrl + "/?payment=failed",
           failureUrl: `${baseUrl}/?payment=failed`,
           metadata: {
             store: "RAILWAY",
