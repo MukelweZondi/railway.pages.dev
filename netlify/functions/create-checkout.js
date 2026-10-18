@@ -96,7 +96,7 @@ exports.handler = async (event) => {
     }
 
     // Use your deployed website's HTTPS address for redirects.
-    const baseUrl = `https://${event.headers.host}`;
+    const baseUrl = "https://" + event.headers.host;
 
     const checkoutResponse = await fetch(
       "https://payments.yoco.com/api/checkouts",
@@ -155,4 +155,3 @@ exports.handler = async (event) => {
     };
   }
 };
-```
