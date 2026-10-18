@@ -1879,23 +1879,79 @@
       input.addEventListener("change", updateCheckoutTotals);
     });
 
-    document.getElementById("checkoutForm").addEventListener("submit", event => {
-      event.preventDefault();
+  ```javascript
+document.getElementById("checkoutForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-      if (!cart.length) {
-        showView("cart");
-        notify("Your bag is empty.");
-        return;
-      }
+  const form = event.currentTarget;
 
-      if (!event.currentTarget.reportValidity()) return;
+  if (!cart.length) {
+    showView("cart");
+    notify("Your bag is empty.");
+    return;
+  }
 
-      alert(
-        "This is a checkout preview only. Your order has NOT been placed and no payment has been taken.\n\n" +
-        "Estimated total: " + money(subtotal() + selectedDelivery()) +
-        "\n\nConnect a secure payment provider and order system before launch."
-      );
+  if (!form.reportValidity()) return;
+
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Connecting to checkout...";
+
+  try {
+    const formData = new FormData(form);
+    const deliveryValue =
+      document.querySelector('input[name="delivery"]:checked')?.value;
+
+    const delivery =
+      deliveryValue === "60" || deliveryValue === "collection"
+        ? "collection"
+        : "standard";
+
+    const response = await fetch("/.netlify/functions/create-checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        items: cart.map(item => ({
+          id: item.id,
+          quantity: item.quantity
+        })),
+        customer: {
+          name: [
+            formData.get("firstName"),
+            formData.get("lastName")
+          ].filter(Boolean).join(" "),
+          email: formData.get("email"),
+          phone: formData.get("phone")
+        },
+        delivery,
+        successUrl: window.location.origin + "/?payment=success",
+        cancelUrl: window.location.origin + "/?payment=cancelled"
+      })
     });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.redirectUrl) {
+      throw new Error(
+        data.error || "Could not start payment. Please try again."
+      );
+    }
+
+    window.location.href = data.redirectUrl;
+
+  } catch (error) {
+    console.error("Checkout error:", error);
+    notify(error.message || "Unable to connect to checkout. Please try again.");
+
+    submitButton.disabled = false;
+    submitButton.textContent = originalButtonText;
+  }
+});
+```
 
     document.getElementById("contactForm").addEventListener("submit", event => {
       event.preventDefault();
