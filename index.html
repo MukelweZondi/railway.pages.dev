@@ -1,1294 +1,905 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171917">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11120e">
   <meta name="description" content="RAILWAY — Premium streetwear made for the journey.">
   <title>RAILWAY | Premium Streetwear</title>
 
   <style>
     :root {
-      --black: #171917;
-      --cream: #F5F3EC;
-      --olive: #66745B;
-      --white: #FFFFFF;
-      --muted: #777970;
-      --line: #deded5;
-      --surface: #ebe9e0;
+      --black: #11120e;
+      --olive: #454b32;
+      --cream: #f4f1e9;
+      --white: #fff;
+      --muted: #a6a69c;
+      --border: rgba(255,255,255,.15);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
       background: var(--cream);
       color: var(--black);
-      line-height: 1.5;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    body.drawer-open { overflow: hidden; }
-
-    button, input, select, textarea { font: inherit; }
+    button, input, textarea { font: inherit; }
     button, a { -webkit-tap-highlight-color: transparent; }
-    button { cursor: pointer; }
     a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
+    button { cursor: pointer; }
 
-    button:focus-visible, a:focus-visible,
-    input:focus-visible, select:focus-visible,
-    textarea:focus-visible {
-      outline: 2px solid var(--olive);
-      outline-offset: 3px;
-    }
+    /* TOP SLIDESHOW — above the branding */
 
     .announcement {
-      padding: 8px 12px;
-      background: var(--olive);
-      color: white;
-      text-align: center;
-      font-size: 10px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-
-    /* HEADER */
-    .site-header {
-      min-height: 64px;
-      padding: 0 5%;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 10px;
-      background: var(--black);
-      color: var(--cream);
       position: relative;
-      z-index: 20;
-    }
-
-    .header-left { justify-self: start; }
-
-    .header-right {
-      justify-self: end;
+      height: 36px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      padding: 0 48px;
+      background: var(--olive);
+      color: var(--white);
+      text-align: center;
+      overflow: hidden;
     }
+
+    .announcement-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .announcement-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .45s ease, transform .45s ease;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .announcement-slide.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .announcement-arrow {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 38px;
+      border: 0;
+      background: transparent;
+      color: white;
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    .announcement-arrow.prev { left: 0; }
+    .announcement-arrow.next { right: 0; }
+
+    /* HEADER / BRANDING */
+
+    .header {
+      background: var(--black);
+      color: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      min-height: 82px;
+      max-width: 1500px;
+      margin: auto;
+      padding: 0 5%;
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-right { justify-content: flex-end; }
 
     .icon-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      min-width: 36px;
-      min-height: 36px;
       border: 0;
       background: transparent;
-      color: var(--cream);
-      padding: 5px;
-      font-size: 22px;
+      color: inherit;
+      padding: 8px 0;
+      font-size: 12px;
+      white-space: nowrap;
     }
 
-    .wordmark {
-      color: var(--cream);
-      font-size: clamp(22px, 4vw, 34px);
-      font-weight: 800;
-      letter-spacing: 6px;
-      padding-left: 6px;
+    .hamburger {
+      width: 25px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .brand {
+      justify-self: center;
+      font-weight: 900;
+      font-size: clamp(25px, 3vw, 38px);
+      letter-spacing: 7px;
+      padding-left: 7px;
+    }
+
+    .brand-motto {
       text-align: center;
+      color: #c8c7bc;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      padding: 0 12px 19px;
     }
 
-    .bag-count {
+    .cart-count {
       display: inline-flex;
-      justify-content: center;
       align-items: center;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 4px;
+      justify-content: center;
+      width: 19px;
+      height: 19px;
+      margin-left: 5px;
       border-radius: 50%;
-      background: var(--olive);
-      color: white;
+      background: var(--cream);
+      color: var(--black);
       font-size: 10px;
-      letter-spacing: 0;
     }
 
-    /* HALF-SCREEN MENU */
-    .menu-backdrop {
+    /* NAVIGATION DRAWER */
+
+    .drawer-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 29;
-      background: rgba(0,0,0,.48);
+      background: rgba(0,0,0,.5);
+      z-index: 19;
     }
 
-    .menu-panel {
+    .drawer {
       position: fixed;
-      z-index: 30;
+      z-index: 20;
       top: 0;
-      left: 0;
       bottom: 0;
-      width: min(82vw, 380px);
-      padding: 24px 28px 35px;
-      overflow-y: auto;
-      background: var(--black);
-      color: var(--cream);
+      left: 0;
+      width: min(360px, 88vw);
+      padding: 28px;
+      background: var(--cream);
+      color: var(--black);
       transform: translateX(-105%);
-      visibility: hidden;
-      transition: transform .25s ease, visibility .25s;
+      transition: transform .3s ease;
+      overflow-y: auto;
     }
 
-    .menu-panel.open {
-      transform: translateX(0);
-      visibility: visible;
-    }
+    .drawer.open { transform: translateX(0); }
 
-    .menu-top {
+    .drawer-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 35px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #41423d;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #d7d4ca;
     }
 
-    .menu-brand {
-      font-weight: 800;
+    .drawer-logo {
+      font-size: 24px;
+      font-weight: 900;
       letter-spacing: 4px;
-      font-size: 22px;
     }
 
-    .menu-close {
-      color: var(--cream);
-      background: transparent;
-      border: 0;
-      font-size: 28px;
-      padding: 5px;
+    .drawer-links {
+      display: grid;
+      gap: 0;
+      margin-top: 15px;
     }
 
-    .menu-links {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-    }
-
-    .menu-links a {
-      font-size: 12px;
-      letter-spacing: 1.6px;
+    .drawer-links a {
+      padding: 17px 0;
+      border-bottom: 1px solid #dedbd1;
+      font-size: 13px;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
 
-    .menu-links a:hover { color: #b5c0a9; }
+    /* SEARCH */
 
-    /* VIEWS */
-    .view { display: none; min-height: 55vh; }
-    .view.active { display: block; }
+    .search-panel {
+      display: none;
+      padding: 16px 5%;
+      background: #1b1c17;
+      color: white;
+    }
 
-    /* HERO */
+    .search-panel.open { display: block; }
+
+    .search-inner {
+      max-width: 900px;
+      margin: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-inner input {
+      min-width: 0;
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #77786b;
+      background: transparent;
+      color: white;
+    }
+
+    /* HERO SLIDESHOW */
+
     .hero {
       position: relative;
-      background: var(--black);
+      min-height: 530px;
+      height: min(72vw, 690px);
+      max-height: 690px;
       overflow: hidden;
+      background: #24251f;
+      color: white;
     }
 
-    .hero-image {
-      width: 100%;
-      height: min(76vh, 850px);
-      min-height: 340px;
-      object-fit: cover;
-      object-position: center 35%;
-    }
-
-    .hero-link-wrap {
+    .hero-slides, .hero-slide {
       position: absolute;
-      bottom: 25px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      padding: 0 20px;
+      inset: 0;
+    }
+
+    .hero-slide {
+      opacity: 0;
+      transition: opacity .9s ease;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero-slide.active { opacity: 1; }
+
+    .hero-slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(0,0,0,.68),
+        rgba(0,0,0,.24) 60%,
+        rgba(0,0,0,.12)
+      );
+    }
+
+    /* Replace these paths with your own uploaded images. */
+    .hero-slide:nth-child(1) {
+      background-image: url("railway-model.jpg");
+    }
+
+    .hero-slide:nth-child(2) {
+      background-image: url("railway-look-2.jpg");
+    }
+
+    .hero-slide:nth-child(3) {
+      background-image: url("railway-look-3.jpg");
+    }
+
+    .hero-content {
+      position: absolute;
+      z-index: 2;
+      left: 8%;
+      top: 50%;
+      transform: translateY(-50%);
+      max-width: 580px;
+      padding: 24px 20px 24px 0;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 550px;
+      font-size: clamp(40px, 7vw, 82px);
+      line-height: .99;
+      letter-spacing: -3px;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      margin: 22px 0 28px;
+      color: #e2e0d8;
+      font-size: 13px;
+      line-height: 1.8;
+      letter-spacing: .5px;
     }
 
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 46px;
-      padding: 13px 23px;
+      min-height: 48px;
+      padding: 0 25px;
       border: 1px solid var(--black);
       background: var(--black);
-      color: var(--cream);
-      text-align: center;
+      color: white;
       font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.8px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      transition: background .2s, color .2s, border-color .2s;
+      transition: background .2s ease, color .2s ease;
     }
 
     .button:hover {
       background: var(--olive);
       border-color: var(--olive);
-      color: white;
     }
 
     .button-light {
-      background: var(--cream);
-      border-color: var(--cream);
+      border-color: white;
+      background: white;
       color: var(--black);
     }
 
-    .button-outline {
+    .button-light:hover {
+      background: var(--olive);
+      border-color: var(--olive);
+      color: white;
+    }
+
+    .hero-controls {
+      position: absolute;
+      z-index: 3;
+      left: 8%;
+      bottom: 27px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-dot {
+      width: 28px;
+      height: 3px;
+      border: 0;
+      padding: 0;
+      background: rgba(255,255,255,.45);
+    }
+
+    .hero-dot.active { background: white; }
+
+    .hero-arrow {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: 50%;
       background: transparent;
-      color: var(--black);
+      color: white;
+      font-size: 18px;
     }
 
-    .button-outline:hover { color: white; }
+    /* BRAND MESSAGE */
 
-    .button-full { width: 100%; }
+    .brand-message {
+      padding: 52px 6%;
+      background: var(--cream);
+      text-align: center;
+    }
 
-    /* COLLECTION */
-    .section { padding: 65px 5%; }
+    .brand-message p {
+      max-width: 750px;
+      margin: 0 auto;
+      font-size: clamp(20px, 3.3vw, 35px);
+      line-height: 1.35;
+      letter-spacing: -1px;
+    }
+
+    .brand-message span {
+      display: block;
+      margin-top: 17px;
+      color: #66685a;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* PRODUCTS */
+
+    .collection {
+      padding: 55px 5% 85px;
+      max-width: 1600px;
+      margin: auto;
+    }
 
     .section-heading {
       display: flex;
+      align-items: flex-end;
       justify-content: space-between;
-      align-items: end;
-      gap: 20px;
+      gap: 18px;
       margin-bottom: 28px;
     }
 
     .section-heading h2 {
-      font-size: clamp(25px, 3.5vw, 38px);
-      font-weight: 700;
-      letter-spacing: 1px;
+      margin: 0;
+      font-size: clamp(27px, 4vw, 43px);
+      letter-spacing: -1.5px;
+      text-transform: uppercase;
     }
 
     .section-heading p {
-      max-width: 330px;
-      font-size: 12px;
-      color: var(--muted);
+      margin: 0 0 4px;
+      color: #6e6e63;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px 16px;
-    }
-
-    .product-card { min-width: 0; }
-
-    .product-image-wrap {
-      position: relative;
-      overflow: hidden;
-      background: #e7e5dd;
-      aspect-ratio: 3 / 4;
-    }
-
-    .product-open {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: transparent;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 34px 16px;
     }
 
     .product-image {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: #e5e2d9;
+    }
+
+    .product-image img {
       width: 100%;
       height: 100%;
+      display: block;
       object-fit: cover;
-      transition: transform .35s;
+      transition: transform .5s ease;
     }
 
-    .product-card:hover .product-image { transform: scale(1.025); }
+    .product-image:hover img { transform: scale(1.04); }
 
-    .quick-add {
+    .product-image img.image-missing {
+      opacity: 0;
+    }
+
+    .image-placeholder {
       position: absolute;
-      right: 10px;
-      bottom: 10px;
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 50%;
-      background: var(--cream);
-      color: var(--black);
-      font-size: 24px;
-    }
-
-    .product-info { padding-top: 13px; }
-
-    .product-name {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-    }
-
-    .product-price {
-      margin-top: 6px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .product-options-row {
-      display: grid;
-      grid-template-columns: 1fr 44px;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .product-options-row select,
-    .product-options-row button {
-      width: 100%;
-      min-width: 0;
-      min-height: 44px;
-      border: 1px solid var(--black);
-      background: transparent;
-      color: var(--black);
-      padding: 8px;
-    }
-
-    .product-options-row button {
-      font-size: 20px;
-      padding: 0;
-    }
-
-    .product-options-row button:hover {
-      background: var(--black);
-      color: white;
-    }
-
-    .brand-note {
-      padding: 56px 7%;
-      text-align: center;
-      background: var(--olive);
-      color: white;
-    }
-
-    .brand-note p {
-      margin-bottom: 12px;
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .brand-note h2 {
-      font-size: clamp(24px, 4vw, 42px);
-      font-weight: 500;
-      letter-spacing: .5px;
-    }
-
-    /* GENERAL CONTENT PAGES */
-    .page-section {
-      max-width: 1050px;
-      margin: 0 auto;
-      padding: 45px 5% 75px;
-    }
-
-    .back-button {
-      border: 0;
-      background: transparent;
-      padding: 8px 0;
-      margin-bottom: 25px;
-      color: var(--black);
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .page-title {
-      margin-bottom: 10px;
-      font-size: clamp(29px, 4vw, 43px);
-      letter-spacing: .5px;
-    }
-
-    .page-intro {
-      margin-bottom: 30px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .info-copy { max-width: 800px; }
-
-    .info-copy h2 {
-      margin: 28px 0 8px;
-      font-size: 16px;
-    }
-
-    .info-copy p,
-    .info-copy li {
-      margin: 0 0 15px;
-      font-size: 13px;
-      color: #45463f;
-    }
-
-    .info-copy ul {
-      padding-left: 22px;
-      margin-bottom: 18px;
-    }
-
-    .info-copy a { text-decoration: underline; }
-
-    /* PRODUCT DETAILS */
-    .product-detail-layout {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 42px;
-      align-items: start;
-    }
-
-    .product-detail-image {
-      width: 100%;
-      max-height: 750px;
-      aspect-ratio: 3 / 4;
-      object-fit: cover;
-      background: #e7e5dd;
-    }
-
-    .product-detail-info h1 {
-      font-size: clamp(25px, 3vw, 36px);
-      line-height: 1.2;
-    }
-
-    .detail-price {
-      margin: 14px 0 24px;
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    .option-field {
+      inset: 0;
       display: flex;
       flex-direction: column;
-      gap: 9px;
-      min-width: 0;
-      margin-bottom: 18px;
-    }
-
-    .option-field > span,
-    .option-label {
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+      color: #77786b;
+      text-align: center;
       font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
     }
 
-    .option-field select,
-    .option-field input {
+    .image-placeholder strong {
+      font-size: 23px;
+      letter-spacing: 4px;
+    }
+
+    .product-name {
+      margin: 13px 0 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+    }
+
+    .product-subtitle {
+      margin: 0;
+      color: #77766d;
+      font-size: 11px;
+    }
+
+    .product-actions {
+      margin-top: 15px;
+    }
+
+    .product-actions button {
       width: 100%;
-      min-height: 44px;
-      border: 1px solid var(--line);
-      border-radius: 0;
-      background: white;
-      color: var(--black);
-      padding: 10px;
-    }
-
-    .size-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .size-button {
-      min-width: 43px;
-      min-height: 43px;
-      padding: 8px;
-      border: 1px solid #c9c9c0;
+      min-height: 42px;
+      border: 1px solid #b8b5aa;
       background: transparent;
       color: var(--black);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
-    .size-button.selected {
+    .product-actions button:hover {
       background: var(--black);
       color: white;
       border-color: var(--black);
     }
 
-    .detail-options-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 24px;
+    /* CART PANEL */
+
+    .cart-panel {
+      display: none;
+      padding: 24px 5%;
+      background: #e7e4db;
+      border-top: 1px solid #d4d1c7;
     }
 
-    .detail-actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 24px;
+    .cart-panel.open { display: block; }
+
+    .cart-inner {
+      max-width: 900px;
+      margin: auto;
     }
 
-    /* CART */
-    .cart-layout {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 45px;
-      align-items: start;
-    }
-
-    .cart-item {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 16px;
-      padding: 18px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .cart-item img {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      object-fit: cover;
-      background: #e7e5dd;
-    }
-
-    .cart-item h3 {
-      font-size: 12px;
-      margin-bottom: 6px;
-      letter-spacing: .5px;
-    }
-
-    .cart-item p {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 5px;
-    }
-
-    .cart-controls {
+    .cart-heading {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    .cart-controls button {
-      min-width: 30px;
-      min-height: 30px;
-      border: 1px solid var(--line);
-      background: transparent;
-    }
+    .cart-items { padding: 8px 0 16px; }
 
-    .cart-controls .remove-button {
-      width: auto;
-      border: 0;
-      padding: 4px;
-      text-decoration: underline;
-      font-size: 11px;
-    }
-
-    .summary-box {
-      padding: 24px;
-      background: var(--surface);
-    }
-
-    .summary-box h2 {
-      margin-bottom: 20px;
-      font-size: 17px;
-    }
-
-    .summary-row {
+    .cart-item {
       display: flex;
       justify-content: space-between;
-      gap: 15px;
-      margin: 13px 0;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #cfccc1;
       font-size: 12px;
     }
 
-    .summary-total {
-      padding-top: 17px;
-      border-top: 1px solid #cccbbf;
-      font-size: 15px;
-      font-weight: 700;
+    .cart-item button {
+      border: 0;
+      background: transparent;
+      text-decoration: underline;
     }
 
-    .summary-box .button { width: 100%; margin-top: 18px; }
-
-    .empty-state { padding: 25px 0; }
-    .empty-state p { margin: 10px 0 20px; color: var(--muted); font-size: 13px; }
-
-    /* CHECKOUT */
-    .checkout-layout {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 40px;
-      align-items: start;
-    }
-
-    .checkout-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .field.full { grid-column: 1 / -1; }
-
-    .field label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      min-height: 45px;
-      padding: 11px;
-      border: 1px solid #d4d3ca;
-      border-radius: 0;
-      background: #fffefa;
-      color: var(--black);
-    }
-
-    .field textarea { min-height: 95px; resize: vertical; }
-
-    .delivery-options {
-      grid-column: 1 / -1;
-      margin-top: 5px;
-    }
-
-    .delivery-title {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .delivery-option {
-      display: flex;
-      align-items: start;
-      gap: 10px;
-      margin-top: 10px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.35);
-    }
-
-    .delivery-option input { margin-top: 4px; accent-color: var(--olive); }
-
-    .delivery-option strong {
-      display: block;
-      font-size: 12px;
-      margin-bottom: 4px;
-    }
-
-    .delivery-option small {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .delivery-price {
-      margin-left: auto;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .notice {
-      margin-top: 20px;
-      padding: 15px;
-      background: #e8e9df;
-      color: #394332;
-      font-size: 12px;
-    }
-
-    .notice strong { display: block; margin-bottom: 5px; }
-
-    /* CONTACT FORM */
-    .contact-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      max-width: 750px;
+    .cart-empty {
+      color: #65665c;
+      font-size: 13px;
     }
 
     /* FOOTER */
+
     .footer {
-      padding: 45px 5% 22px;
       background: var(--black);
-      color: var(--cream);
+      color: white;
+      padding: 55px 6% 25px;
     }
 
     .footer-top {
       display: grid;
-      grid-template-columns: 1.2fr repeat(3, 1fr);
-      gap: 28px;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 40px;
+      max-width: 1400px;
+      margin: auto;
     }
 
     .footer-brand {
-      font-size: 25px;
-      font-weight: 800;
+      font-size: 33px;
+      font-weight: 900;
       letter-spacing: 5px;
     }
 
-    .footer-tagline {
-      margin-top: 10px;
-      max-width: 210px;
-      color: #d0d0c6;
+    .footer-motto {
+      max-width: 300px;
+      color: #b9b9ae;
       font-size: 12px;
+      line-height: 1.8;
     }
 
-    .footer-heading {
-      margin-bottom: 15px;
+    .footer h3 {
+      margin: 4px 0 20px;
       font-size: 10px;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .footer-links {
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
+      display: grid;
+      gap: 13px;
     }
 
     .footer-links a {
-      color: #d0d0c6;
+      color: #c9c8be;
       font-size: 12px;
     }
 
     .footer-links a:hover { color: white; }
 
     .footer-bottom {
+      max-width: 1400px;
+      margin: 40px auto 0;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
-      gap: 16px;
-      margin-top: 35px;
-      padding-top: 18px;
-      border-top: 1px solid #41423d;
-      color: #c3c4bb;
+      flex-wrap: wrap;
+      gap: 15px;
+      color: #9b9b90;
       font-size: 10px;
     }
 
-    .toast {
-      position: fixed;
-      z-index: 120;
-      left: 50%;
-      bottom: 22px;
-      transform: translateX(-50%);
-      max-width: calc(100vw - 32px);
-      padding: 12px 18px;
-      background: var(--black);
-      color: white;
+    /* CONTACT */
+
+    .contact-section {
+      padding: 60px 5%;
+      background: #e8e5dc;
+    }
+
+    .contact-inner {
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .contact-inner h2 {
+      margin-top: 0;
+      font-size: 30px;
+      text-transform: uppercase;
+    }
+
+    .contact-inner p {
+      color: #626257;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #c9c6bb;
+      background: #f8f6f0;
+      color: var(--black);
+    }
+
+    .contact-form textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-message {
       font-size: 12px;
-      text-align: center;
-      box-shadow: 0 5px 25px rgba(0,0,0,.2);
+      line-height: 1.6;
     }
 
-    [hidden] { display: none !important; }
+    .hidden { display: none !important; }
 
-    @media (max-width: 760px) {
-      .site-header { min-height: 56px; padding: 0 10px; }
-      .wordmark { font-size: 22px; letter-spacing: 4px; }
-      .header-right { gap: 3px; }
-      .icon-button { min-width: 32px; font-size: 20px; }
+    @media (max-width: 900px) {
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .footer-about { grid-column: 1 / -1; }
+      .hero { min-height: 510px; height: 75vw; }
+    }
 
-      .hero-image {
-        height: auto;
-        min-height: 0;
-        max-height: none;
-        object-fit: contain;
+    @media (max-width: 560px) {
+      .announcement { height: 34px; }
+      .announcement-slide { font-size: 8px; letter-spacing: 1.2px; }
+      .header-inner {
+        min-height: 70px;
+        grid-template-columns: 1fr auto 1fr;
+        padding: 0 16px;
+        gap: 8px;
       }
-
-      .hero-link-wrap { bottom: 15px; }
-
-      .section { padding: 43px 4%; }
-      .section-heading { align-items: start; flex-direction: column; gap: 8px; }
-      .section-heading p { max-width: none; }
-
-      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 10px; }
-      .product-name { font-size: 11px; }
-      .product-options-row { grid-template-columns: minmax(0, 1fr) 40px; gap: 5px; }
-      .product-options-row select { padding: 6px; font-size: 12px; }
-
-      .product-detail-layout { grid-template-columns: 1fr; gap: 24px; }
-      .product-detail-image { max-height: none; }
-      .detail-options-row { gap: 10px; }
-
-      .cart-layout, .checkout-layout { grid-template-columns: 1fr; gap: 25px; }
-
-      .footer-top { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 18px; }
+      .header-left, .header-right { gap: 12px; }
+      .brand { font-size: 23px; letter-spacing: 4px; padding-left: 4px; }
+      .brand-motto { font-size: 8px; letter-spacing: 1px; padding-bottom: 15px; }
+      .location-link { display: none; }
+      .header-right { gap: 13px; }
+      .hero { min-height: 500px; height: 125vw; max-height: 650px; }
+      .hero-content { left: 7%; right: 6%; }
+      .hero h1 { font-size: clamp(42px, 12vw, 65px); letter-spacing: -2px; }
+      .hero p { max-width: 280px; }
+      .hero-controls { left: 7%; bottom: 20px; }
+      .brand-message { padding: 42px 7%; }
+      .collection { padding: 43px 4% 60px; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .product-grid { gap: 27px 10px; }
+      .product-name { font-size: 10px; line-height: 1.5; }
+      .product-subtitle { font-size: 10px; }
+      .product-actions button { padding: 8px 4px; font-size: 8px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+      .footer-about { grid-column: 1 / -1; }
+      .footer-brand { font-size: 28px; }
       .footer-bottom { flex-direction: column; }
-
-      .page-section { padding: 30px 5% 55px; }
     }
 
-    @media (max-width: 420px) {
-      .wordmark { font-size: 19px; letter-spacing: 3px; }
-      .header-right { gap: 0; }
-      .icon-button { padding: 4px; }
-      .size-button { min-width: 38px; min-height: 40px; }
-      .checkout-form, .contact-form { grid-template-columns: 1fr; }
-      .field.full { grid-column: auto; }
-      .delivery-options { grid-column: auto; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="announcement">
-    PREMIUM STREETWEAR MADE FOR THE JOURNEY
+
+  <!-- SLIDING ANNOUNCEMENT BAR ABOVE RAILWAY BRANDING -->
+  <div class="announcement" aria-label="Store announcements">
+    <button class="announcement-arrow prev" id="announcementPrev"
+      type="button" aria-label="Previous announcement">‹</button>
+
+    <div class="announcement-track" aria-live="polite">
+      <div class="announcement-slide active">Premium streetwear made for the journey.</div>
+      <div class="announcement-slide">Discover the RAILWAY collection.</div>
+      <div class="announcement-slide">Built for everyday movement.</div>
+    </div>
+
+    <button class="announcement-arrow next" id="announcementNext"
+      type="button" aria-label="Next announcement">›</button>
   </div>
 
-  <header class="site-header">
-    <div class="header-left">
-      <button class="icon-button" id="menuButton" aria-label="Open menu"
-        aria-expanded="false" aria-controls="menuPanel">☰</button>
+  <!-- BRAND HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <button class="icon-button" id="menuButton" type="button"
+          aria-label="Open navigation" aria-expanded="false">
+          <span class="hamburger" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+        <a class="icon-button location-link" href="#store-location">Location</a>
+      </div>
+
+      <a class="brand" href="#home" aria-label="RAILWAY home">RAILWAY</a>
+
+      <div class="header-right">
+        <button class="icon-button" id="searchButton" type="button"
+          aria-label="Open search">Search</button>
+        <button class="icon-button" id="cartButton" type="button"
+          aria-label="Open shopping bag">
+          Bag <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
     </div>
-
-    <a class="wordmark" href="#home" data-view="home" aria-label="RAILWAY home">RAILWAY</a>
-
-    <div class="header-right">
-      <button class="icon-button" id="searchButton" aria-label="Search products" title="Search">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-          <circle cx="10.8" cy="10.8" r="6.8"></circle>
-          <path d="m16 16 5 5"></path>
-        </svg>
-      </button>
-
-      <button class="icon-button" id="cartButton" aria-label="Open shopping bag" title="Shopping bag">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 8h14l1 13H4L5 8Z"></path>
-          <path d="M9 9V6a3 3 0 0 1 6 0v3"></path>
-        </svg>
-        <span class="bag-count" id="bagCount">0</span>
-      </button>
-    </div>
+    <div class="brand-motto">Premium streetwear made for the journey.</div>
   </header>
 
-  <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+  <!-- MOBILE / DESKTOP MENU -->
+  <div class="drawer-backdrop hidden" id="drawerBackdrop"></div>
 
-  <nav class="menu-panel" id="menuPanel" aria-label="Main menu" aria-hidden="true">
-    <div class="menu-top">
-      <span class="menu-brand">RAILWAY</span>
-      <button class="menu-close" id="menuClose" aria-label="Close menu">×</button>
+  <nav class="drawer" id="navigationDrawer" aria-label="Main navigation">
+    <div class="drawer-top">
+      <span class="drawer-logo">RAILWAY</span>
+      <button class="icon-button" id="closeDrawer" type="button"
+        aria-label="Close navigation">✕</button>
     </div>
-    <div class="menu-links">
-      <a href="#home" data-view="home">Home</a>
-      <a href="#collection" data-view="home" data-scroll="collection">Shop Collection</a>
-      <a href="#about" data-view="about">About Us</a>
-      <a href="#cart" data-view="cart">Shopping Bag</a>
-      <a href="#tracking" data-view="tracking">Track Order</a>
-      <a href="#faqs" data-view="faqs">FAQs</a>
-      <a href="#shipping" data-view="shipping">Delivery Information</a>
-      <a href="#returns" data-view="returns">Returns & Exchanges</a>
-      <a href="#contact" data-view="contact">Contact Us</a>
-      <a href="#privacy" data-view="privacy">Privacy Policy</a>
-      <a href="#terms" data-view="terms">Terms & Conditions</a>
-      <a href="#payment" data-view="payment">Payment Information</a>
+    <div class="drawer-links">
+      <a href="#home">Home</a>
+      <a href="#collection">Shop Collection</a>
+      <a href="#about">Inside RAILWAY</a>
+      <a href="#store-location">Store Location</a>
+      <a href="#order-tracking">Order Tracking</a>
+      <a href="#shipping-policy">Shipping Policy</a>
+      <a href="#contact">Contact Us</a>
     </div>
   </nav>
 
-  <main>
-    <!-- HOME -->
-    <section class="view active" id="homeView">
-      <div class="hero">
-        <img
-          class="hero-image"
-          src="https://raw.githubusercontent.com/andiswasoni/railway.pages.dev/main/railway-model.jpg"
-          alt="RAILWAY streetwear collection"
-          fetchpriority="high"
-          onerror="this.onerror=null;this.src='WhatsApp Image 2026-10-17 at 19.20.39.jpeg';"
-        >
-        <div class="hero-link-wrap">
-          <a class="button button-light" href="#collection" data-view="home" data-scroll="collection">
-            Shop Collection
-          </a>
-        </div>
+  <!-- SEARCH PANEL -->
+  <section class="search-panel" id="searchPanel" aria-label="Search products">
+    <form class="search-inner" id="searchForm">
+      <input id="searchInput" type="search" placeholder="Search the collection..."
+        aria-label="Search the collection">
+      <button class="button button-light" type="submit">Search</button>
+    </form>
+  </section>
+
+  <!-- SHOPPING BAG -->
+  <section class="cart-panel" id="cartPanel" aria-label="Shopping bag">
+    <div class="cart-inner">
+      <div class="cart-heading">
+        <h2>Your Bag</h2>
+        <button class="icon-button" id="closeCart" type="button">Close ✕</button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <p class="cart-empty">Your bag is currently empty.</p>
+      </div>
+      <p id="cartNotice" class="form-message" aria-live="polite"></p>
+      <a class="button" href="#contact" id="enquiryButton">Enquire about an order</a>
+    </div>
+  </section>
+
+  <main id="home">
+    <!-- MAIN HERO SLIDESHOW -->
+    <section class="hero" aria-label="RAILWAY featured collection">
+      <div class="hero-slides" id="heroSlides">
+        <div class="hero-slide active" role="img"
+          aria-label="RAILWAY campaign image one"></div>
+        <div class="hero-slide" role="img"
+          aria-label="RAILWAY campaign image two"></div>
+        <div class="hero-slide" role="img"
+          aria-label="RAILWAY campaign image three"></div>
       </div>
 
-      <section class="section" id="collection">
-        <div class="section-heading">
-          <h2>THE COLLECTION</h2>
-          <p>Everyday streetwear. Designed for wherever the journey takes you.</p>
-        </div>
-        <div class="product-grid" id="productGrid"></div>
-      </section>
-
-      <section class="brand-note">
-        <p>RAILWAY · SOUTH AFRICA</p>
-        <h2>Premium streetwear made for the journey.</h2>
-      </section>
-    </section>
-
-    <!-- PRODUCT DETAILS -->
-    <section class="view" id="productView">
-      <div class="page-section" id="productDetail"></div>
-    </section>
-
-    <!-- CART -->
-    <section class="view" id="cartView">
-      <div class="page-section">
-        <button class="back-button" data-view="home" data-scroll="collection">← Continue shopping</button>
-        <h1 class="page-title">YOUR BAG</h1>
-        <p class="page-intro">Review your items, sizes, colours and quantities before checkout.</p>
-        <div id="cartContents"></div>
+      <div class="hero-content">
+        <div class="eyebrow">RAILWAY / Essential Collection</div>
+        <h1>Made for<br>the journey.</h1>
+        <p>Premium streetwear made for the journey. Everyday essentials, considered design, and a style that moves with you.</p>
+        <a class="button button-light" href="#collection">Shop Collection&nbsp; ↗</a>
       </div>
-    </section>
 
-    <!-- CHECKOUT ONLY APPEARS AFTER CUSTOMER PROCEEDS -->
-    <section class="view" id="checkoutView">
-      <div class="page-section">
-        <button class="back-button" data-view="cart">← Back to bag</button>
-        <h1 class="page-title">CHECKOUT</h1>
-        <p class="page-intro">Enter your delivery details and review your order.</p>
-
-        <div class="checkout-layout">
-          <form id="checkoutForm" class="checkout-form">
-            <div class="field">
-              <label for="firstName">First name *</label>
-              <input id="firstName" name="firstName" autocomplete="given-name" required>
-            </div>
-
-            <div class="field">
-              <label for="lastName">Last name *</label>
-              <input id="lastName" name="lastName" autocomplete="family-name" required>
-            </div>
-
-            <div class="field full">
-              <label for="email">Email address *</label>
-              <input id="email" name="email" type="email" autocomplete="email" required>
-            </div>
-
-            <div class="field full">
-              <label for="phone">Phone number *</label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" required>
-            </div>
-
-            <div class="field full">
-              <label for="address">Street address *</label>
-              <input id="address" name="address" autocomplete="street-address" required>
-            </div>
-
-            <div class="field">
-              <label for="city">City / Town *</label>
-              <input id="city" name="city" autocomplete="address-level2" required>
-            </div>
-
-            <div class="field">
-              <label for="province">Province *</label>
-              <select id="province" name="province" autocomplete="address-level1" required>
-                <option value="">Choose province</option>
-                <option>Eastern Cape</option>
-                <option>Free State</option>
-                <option>Gauteng</option>
-                <option>KwaZulu-Natal</option>
-                <option>Limpopo</option>
-                <option>Mpumalanga</option>
-                <option>North West</option>
-                <option>Northern Cape</option>
-                <option>Western Cape</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="postalCode">Postal code *</label>
-              <input id="postalCode" name="postalCode" autocomplete="postal-code" required>
-            </div>
-
-            <div class="field">
-              <label for="country">Country</label>
-              <input id="country" value="South Africa" readonly>
-            </div>
-
-            <div class="field full">
-              <label for="orderNotes">Order notes (optional)</label>
-              <textarea id="orderNotes" name="orderNotes" placeholder="Any delivery instructions?"></textarea>
-            </div>
-
-            <div class="delivery-options">
-              <div class="delivery-title">Delivery method *</div>
-
-              <label class="delivery-option">
-                <input type="radio" name="delivery" value="120" checked required>
-                <span>
-                  <strong>Standard Delivery</strong>
-                  <small>Estimated delivery: 3–5 business days.</small>
-                </span>
-                <span class="delivery-price">R120</span>
-              </label>
-
-              <label class="delivery-option">
-                <input type="radio" name="delivery" value="60" required>
-                <span>
-                  <strong>Collection Point</strong>
-                  <small>Collect from a participating collection point, where available.</small>
-                </span>
-                <span class="delivery-price">R60</span>
-              </label>
-            </div>
-
-            <div class="field full">
-              <button class="button button-full" type="submit">Review Order</button>
-            </div>
-          </form>
-
-          <aside class="summary-box">
-            <h2>ORDER SUMMARY</h2>
-            <div id="checkoutItems"></div>
-            <div class="summary-row">
-              <span>Subtotal</span>
-              <span id="checkoutSubtotal">R0</span>
-            </div>
-            <div class="summary-row">
-              <span>Delivery</span>
-              <span id="deliveryAmount">R120</span>
-            </div>
-            <div class="summary-row summary-total">
-              <span>Estimated total</span>
-              <span id="checkoutTotal">R120</span>
-            </div>
-            <div class="notice">
-              <strong>Checkout preview</strong>
-              This website does not yet accept payments or submit orders. A secure payment provider and order-processing system must be connected before taking real orders.
-            </div>
-          </aside>
-        </div>
+      <div class="hero-controls" aria-label="Hero slideshow controls">
+        <button class="hero-arrow" id="heroPrev" type="button"
+          aria-label="Previous slide">‹</button>
+        <button class="hero-dot active" type="button" data-slide="0"
+          aria-label="Show slide 1"></button>
+        <button class="hero-dot" type="button" data-slide="1"
+          aria-label="Show slide 2"></button>
+        <button class="hero-dot" type="button" data-slide="2"
+          aria-label="Show slide 3"></button>
+        <button class="hero-arrow" id="heroNext" type="button"
+          aria-label="Next slide">›</button>
       </div>
     </section>
 
-    <!-- ABOUT -->
-    <section class="view" id="aboutView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">ABOUT RAILWAY</h1>
-        <div class="info-copy">
-          <p>RAILWAY is a South African streetwear brand built around movement, individuality and everyday expression.</p>
-          <p>Our pieces are designed for the journey: everyday streetwear for wherever life takes you.</p>
-          <p><strong>Premium streetwear made for the journey.</strong></p>
-        </div>
-      </div>
+    <section class="brand-message" id="about">
+      <p>Premium streetwear made for the journey.</p>
+      <span>Inside RAILWAY</span>
     </section>
 
-    <!-- TRACK ORDER -->
-    <section class="view" id="trackingView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">TRACK YOUR ORDER</h1>
-        <p class="page-intro">Tracking information will be provided after your order has been dispatched, where available.</p>
-        <div class="info-copy">
-          <p>Use the tracking details supplied with your dispatch confirmation to follow your parcel.</p>
-          <p>Live order lookup will become available once the RAILWAY order and fulfilment system is connected.</p>
-          <p>For help with an order, please use the Contact Us page and include your order number if you have one.</p>
-        </div>
+    <!-- PRODUCT COLLECTION: NO PRICES SHOWN -->
+    <section class="collection" id="collection">
+      <div class="section-heading">
+        <h2>The Collection</h2>
+        <p>Everyday essentials / RAILWAY</p>
       </div>
-    </section>
 
-    <!-- FAQS -->
-    <section class="view" id="faqsView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">FREQUENTLY ASKED QUESTIONS</h1>
-        <div class="info-copy">
-          <h2>How long does delivery take?</h2>
-          <p>Estimated delivery is 3–5 business days. Delays can occur during busy periods or due to courier circumstances.</p>
-
-          <h2>Do you deliver throughout South Africa?</h2>
-          <p>RAILWAY intends to offer delivery across South Africa. Available delivery options and charges should be confirmed at checkout.</p>
-
-          <h2>Can I cancel an order after placing it?</h2>
-          <p>Orders may not be cancellable once placed. Please check your product, colour, size and delivery details carefully before confirming. Your statutory rights remain unaffected.</p>
-
-          <h2>Can I get a refund if I change my mind?</h2>
-          <p>RAILWAY does not offer refunds for change-of-mind returns. Eligible regular-price items may qualify for an exchange under the Returns &amp; Exchanges policy. Applicable consumer rights are not excluded.</p>
-
-          <h2>Can sale items be exchanged?</h2>
-          <p>Sale items are generally final sale, subject to applicable consumer-protection law and your statutory rights.</p>
-
-          <h2>What if I receive the wrong item?</h2>
-          <p>Contact Customer Care with your order details and information about the item received so the issue can be assessed.</p>
-
-          <h2>What if my item is damaged or defective?</h2>
-          <p>Contact Customer Care with your order details and clear photographs, where possible. The issue will be assessed and an appropriate remedy provided in line with applicable consumer law.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- DELIVERY -->
-    <section class="view" id="shippingView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">DELIVERY INFORMATION</h1>
-        <div class="info-copy">
-          <h2>Delivery area</h2>
-          <p>RAILWAY delivery is intended for addresses within South Africa, subject to courier coverage.</p>
-
-          <h2>Estimated delivery time</h2>
-          <p>Estimated delivery is 3–5 business days. This is an estimate and not a guaranteed delivery date.</p>
-
-          <h2>Delivery charges</h2>
-          <p>Available delivery methods and their charges should be displayed at checkout before an order is confirmed.</p>
-
-          <h2>Tracking</h2>
-          <p>Tracking information will be provided after dispatch where available.</p>
-
-          <h2>Customer responsibility</h2>
-          <p>Please provide accurate contact, address and postal-code information. Delays may occur due to courier operations, public holidays, incorrect information or circumstances outside RAILWAY's control.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- RETURNS -->
-    <section class="view" id="returnsView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">RETURNS &amp; EXCHANGES</h1>
-        <div class="info-copy">
-          <h2>Change of mind</h2>
-          <p>RAILWAY does not offer refunds for change-of-mind returns. Eligible regular-price items may be considered for an exchange, subject to this policy and stock availability.</p>
-
-          <h2>Exchange conditions</h2>
-          <p>Items requested for exchange should be unworn, unwashed and in their original condition, with original tags and packaging where applicable. Contact Customer Care before sending an item back to confirm the process and applicable timeframe.</p>
-
-          <h2>Sale items</h2>
-          <p>Sale items are generally final sale and not eligible for change-of-mind exchanges, subject to applicable consumer-protection law.</p>
-
-          <h2>Wrong, damaged or defective items</h2>
-          <p>Contact Customer Care with your order details and relevant photographs. RAILWAY will assess the issue and provide an appropriate remedy as required by applicable law.</p>
-
-          <h2>Contact us first</h2>
-          <p>Please do not send an item back before contacting Customer Care for return or exchange instructions.</p>
-        </div>
-      </div>
+      <div class="product-grid" id="productGrid"></div>
     </section>
 
     <!-- CONTACT -->
-    <section class="view" id="contactView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">CONTACT US</h1>
-        <p class="page-intro">Questions about an order, delivery, product or exchange? Send us a message.</p>
+    <section class="contact-section" id="contact">
+      <div class="contact-inner">
+        <h2>Get in touch</h2>
+        <p>Have a question about the collection, sizing, delivery, or an order? Send RAILWAY an enquiry.</p>
 
-        <form id="contactForm" class="contact-form">
-          <div class="field">
-            <label for="contactName">Name *</label>
-            <input id="contactName" name="name" required>
-          </div>
-
-          <div class="field">
-            <label for="contactOrder">Order number (optional)</label>
-            <input id="contactOrder" name="orderNumber">
-          </div>
-
-          <div class="field full">
-            <label for="contactReason">Reason *</label>
-            <select id="contactReason" name="reason" required>
-              <option value="">Choose a reason</option>
-              <option>Order enquiry</option>
-              <option>Delivery</option>
-              <option>Return / Exchange</option>
-              <option>Payment</option>
-              <option>Product enquiry</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div class="field full">
-            <label for="contactMessage">Message *</label>
-            <textarea id="contactMessage" name="message" required></textarea>
-          </div>
-
-          <div class="field full">
-            <button class="button" type="submit">Prepare Message</button>
-          </div>
+        <!-- This form opens the customer's email app.
+             Change the address below to your real store email. -->
+        <form class="contact-form" id="contactForm">
+          <input type="text" name="name" placeholder="Your name"
+            aria-label="Your name" required>
+          <input type="email" name="email" placeholder="Email address"
+            aria-label="Email address" required>
+          <input type="text" name="subject" placeholder="Subject"
+            aria-label="Subject" required>
+          <textarea name="message" placeholder="Your message"
+            aria-label="Your message" required></textarea>
+          <button class="button" type="submit">Prepare enquiry</button>
+          <p class="form-message" id="contactMessage" aria-live="polite"></p>
         </form>
-
-        <div class="info-copy" style="margin-top:28px">
-          <p>Follow RAILWAY on TikTok: <a href="https://www.tiktok.com/@railway517" target="_blank" rel="noopener noreferrer">@railway517 ↗</a></p>
-          <p>The contact form is a preview and does not send messages until connected to a customer-support service.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRIVACY -->
-    <section class="view" id="privacyView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">PRIVACY POLICY</h1>
-        <div class="info-copy">
-          <p>This policy describes the intended approach to personal information collected through the RAILWAY storefront. It should be reviewed and finalised before the website begins processing real customer orders.</p>
-
-          <h2>Information we may collect</h2>
-          <p>Information may include your name, delivery address, email address, telephone number, order details and information you provide through customer-support forms.</p>
-
-          <h2>How information may be used</h2>
-          <p>Information may be used to process and fulfil orders, arrange delivery, respond to enquiries, provide customer support, maintain records and improve our services. Relevant communications may be sent where permitted by law.</p>
-
-          <h2>Service providers and security</h2>
-          <p>Information may need to be shared with delivery companies, payment providers and technical service providers to complete requested services. Appropriate safeguards should be implemented to protect personal information.</p>
-
-          <h2>South African privacy law</h2>
-          <p>Personal information must be handled in accordance with applicable South African privacy law, including POPIA where applicable. Customers may have rights to request access to or correction of their personal information.</p>
-
-          <h2>Contact</h2>
-          <p>For privacy enquiries, please use the Contact Us page. Official privacy contact details should be added before launch.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- TERMS -->
-    <section class="view" id="termsView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">TERMS &amp; CONDITIONS</h1>
-        <div class="info-copy">
-          <p>These terms describe the intended rules for using the RAILWAY storefront. They should be reviewed before the site begins accepting orders.</p>
-
-          <h2>Products and availability</h2>
-          <p>Product photographs, descriptions, colours and sizes are provided to help customers make an informed choice. Actual colours may vary slightly by screen. Products are subject to availability.</p>
-
-          <h2>Pricing and currency</h2>
-          <p>Prices are displayed in South African rand (ZAR). The price, delivery charge and applicable total should be reviewed before a purchase is completed.</p>
-
-          <h2>Customer information</h2>
-          <p>Customers are responsible for checking product selection, colour, size, quantity and delivery details before submitting an order.</p>
-
-          <h2>Orders and payment</h2>
-          <p>An order system and secure payment provider must be connected before the website can accept real orders. A checkout preview does not itself create a purchase.</p>
-
-          <h2>Cancellations, returns and exchanges</h2>
-          <p>Orders may not be cancellable once placed. RAILWAY does not offer change-of-mind refunds; eligible exchanges may be considered under the Returns &amp; Exchanges policy. Sale items are generally final sale. Nothing in these terms excludes rights that cannot lawfully be excluded.</p>
-
-          <h2>Website and intellectual property</h2>
-          <p>RAILWAY brand assets, logos, photographs and original website content should not be copied or used without permission, except where permitted by law.</p>
-
-          <h2>Consumer rights</h2>
-          <p>These terms are subject to applicable South African law, including applicable consumer-protection requirements. Obtain legal review before publishing a final commercial policy.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAYMENT -->
-    <section class="view" id="paymentView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">PAYMENT INFORMATION</h1>
-        <div class="info-copy">
-          <p>Available payment methods should be displayed at checkout once RAILWAY has connected a secure payment provider.</p>
-          <p>Review your selected items, delivery method, fees and final total before completing a payment.</p>
-          <p>This storefront preview does not collect card details, accept payments or confirm orders. Do not enter payment-card information into this demo.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- STORE LOCATION -->
-    <section class="view" id="storeView">
-      <div class="page-section">
-        <button class="back-button" data-view="home">← Home</button>
-        <h1 class="page-title">STORE LOCATION</h1>
-        <div class="info-copy">
-          <p>RAILWAY is a South African streetwear brand.</p>
-          <p>Physical store address and opening hours will be published here once confirmed.</p>
-          <p>For enquiries, visit our Contact Us page.</p>
-        </div>
       </div>
     </section>
   </main>
@@ -1296,667 +907,387 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-top">
-      <div>
-        <a href="#home" data-view="home" class="footer-brand">RAILWAY</a>
-        <p class="footer-tagline">Premium streetwear made for the journey.</p>
+      <div class="footer-about">
+        <div class="footer-brand">RAILWAY</div>
+        <p class="footer-motto">Premium streetwear made for the journey.</p>
       </div>
 
       <div>
-        <h3 class="footer-heading">QUICK LINKS</h3>
-        <nav class="footer-links">
-          <a href="#home" data-view="home">Home</a>
-          <a href="#collection" data-view="home" data-scroll="collection">Shop</a>
-          <a href="#about" data-view="about">About Us</a>
-          <a href="#cart" data-view="cart">Cart</a>
-          <a href="#tracking" data-view="tracking">Track Order</a>
-          <a href="#store" data-view="store">Store Location</a>
-        </nav>
+        <h3>Explore</h3>
+        <div class="footer-links">
+          <a href="#collection">Shop Collection</a>
+          <a href="#about">Inside RAILWAY</a>
+          <a href="#store-location" id="store-location">Store Location</a>
+          <a href="#order-tracking" id="order-tracking">Order Tracking</a>
+        </div>
       </div>
 
       <div>
-        <h3 class="footer-heading">CUSTOMER CARE</h3>
-        <nav class="footer-links">
-          <a href="#faqs" data-view="faqs">FAQs</a>
-          <a href="#shipping" data-view="shipping">Delivery Information</a>
-          <a href="#returns" data-view="returns">Returns &amp; Exchanges</a>
-          <a href="#contact" data-view="contact">Contact Us</a>
-        </nav>
-      </div>
-
-      <div>
-        <h3 class="footer-heading">INFORMATION</h3>
-        <nav class="footer-links">
-          <a href="#privacy" data-view="privacy">Privacy Policy</a>
-          <a href="#terms" data-view="terms">Terms &amp; Conditions</a>
-          <a href="#payment" data-view="payment">Payment Information</a>
-          <a href="#shipping" data-view="shipping">Shipping Policy</a>
-          <a href="https://www.tiktok.com/@railway517" target="_blank" rel="noopener noreferrer">Follow us on TikTok ↗</a>
-        </nav>
+        <h3>Information</h3>
+        <div class="footer-links">
+          <a href="#shipping-policy" id="shipping-policy">Shipping Policy</a>
+          <a href="#terms" id="terms">Terms of Service</a>
+          <a href="#privacy" id="privacy">Privacy Policy</a>
+          <a href="#contact">Contact Us</a>
+        </div>
       </div>
     </div>
 
     <div class="footer-bottom">
       <span>© <span id="year"></span> RAILWAY. All rights reserved.</span>
-      <span>PREMIUM STREETWEAR · SOUTH AFRICA</span>
+      <span>Premium streetwear made for the journey.</span>
     </div>
   </footer>
 
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-
   <script>
-    /* -------------------------------------------------------
-       RAILWAY STORE SETTINGS
-       Change product names, prices and photo filenames here.
-    ------------------------------------------------------- */
+    "use strict";
+
+    /*
+      IMPORTANT:
+      1. Upload your original product photos to the same GitHub repository
+         as this index.html file.
+      2. Replace the example image filenames below with the exact names
+         of your real RAILWAY images.
+      3. Do not change your logo/photo assets if you want to preserve them.
+    */
 
     const products = [
       {
         id: "railway-01",
         name: "RAILWAY Essential Tee 01",
-        price: 500,
         image: "WhatsApp Image 2026-10-17 at 19.20.40.jpeg"
       },
       {
         id: "railway-02",
         name: "RAILWAY Essential Tee 02",
-        price: 500,
-        image: "WhatsApp Image 2026-10-17 at 19.20.40 (1).jpeg"
+        image: "WhatsApp Image 2026-10-17 at 19.20.40%20(1).jpeg"
       },
       {
         id: "railway-03",
         name: "RAILWAY Essential Tee 03",
-        price: 500,
-        image: "WhatsApp Image 2026-10-17 at 19.20.41 (1).jpeg"
+        image: "WhatsApp Image 2026-10-17 at 19.20.41%20(1).jpeg"
+      },
+      {
+        id: "railway-04",
+        name: "RAILWAY Essential Tee 04",
+        image: "railway-tee-04.jpg"
+      },
+      {
+        id: "railway-05",
+        name: "RAILWAY Essential Tee 05",
+        image: "railway-tee-05.jpg"
+      },
+      {
+        id: "railway-06",
+        name: "RAILWAY Essential Tee 06",
+        image: "railway-tee-06.jpg"
+      },
+      {
+        id: "railway-07",
+        name: "RAILWAY Essential Tee 07",
+        image: "railway-tee-07.jpg"
       }
     ];
 
-    const sizes = ["S", "M", "L", "XL", "XXL"];
-    const colours = ["Black", "White", "Olive"];
+    const productGrid = document.getElementById("productGrid");
+    const cart = [];
 
-    const viewIds = [
-      "home", "product", "cart", "checkout", "about",
-      "tracking", "faqs", "shipping", "returns", "contact",
-      "privacy", "terms", "payment", "store"
-    ];
+    function renderProducts(items) {
+      productGrid.innerHTML = "";
 
-    let cart = [];
-    let selectedProductId = null;
-    let toastTimer;
-
-    try {
-      const saved = JSON.parse(localStorage.getItem("railwayBag") || "[]");
-      if (Array.isArray(saved)) {
-        cart = saved.filter(item =>
-          products.some(product => product.id === item.id) &&
-          Number.isInteger(item.quantity) &&
-          item.quantity > 0
-        ).map(item => ({
-          ...item,
-          colour: item.colour || "Black",
-          size: item.size || "",
-          key: item.key || `${item.id}|${item.size || ""}|${item.colour || "Black"}`
-        }));
-      }
-    } catch (error) {
-      cart = [];
-    }
-
-    function money(amount) {
-      return "R" + Number(amount).toLocaleString("en-ZA", {
-        maximumFractionDigits: 2
-      });
-    }
-
-    function getProduct(id) {
-      return products.find(product => product.id === id);
-    }
-
-    function escapeHTML(value) {
-      return String(value).replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[char]);
-    }
-
-    function notify(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.hidden = false;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
-    }
-
-    function saveCart() {
-      try {
-        localStorage.setItem("railwayBag", JSON.stringify(cart));
-      } catch (error) {
-        /* The cart still works for this browser session. */
-      }
-      updateBagCount();
-    }
-
-    function updateBagCount() {
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      document.getElementById("bagCount").textContent = count;
-    }
-
-    function openMenu() {
-      document.getElementById("menuPanel").classList.add("open");
-      document.getElementById("menuPanel").setAttribute("aria-hidden", "false");
-      document.getElementById("menuBackdrop").hidden = false;
-      document.getElementById("menuButton").setAttribute("aria-expanded", "true");
-    }
-
-    function closeMenu() {
-      document.getElementById("menuPanel").classList.remove("open");
-      document.getElementById("menuPanel").setAttribute("aria-hidden", "true");
-      document.getElementById("menuBackdrop").hidden = true;
-      document.getElementById("menuButton").setAttribute("aria-expanded", "false");
-    }
-
-    function showView(name, options = {}) {
-      const target = viewIds.includes(name) ? name : "home";
-
-      document.querySelectorAll(".view").forEach(view => {
-        view.classList.remove("active");
-      });
-
-      const targetView = document.getElementById(target + "View");
-      if (targetView) targetView.classList.add("active");
-
-      closeMenu();
-
-      if (target === "cart") renderCart();
-      if (target === "checkout") renderCheckout();
-
-      if (options.scrollToCollection && target === "home") {
-        setTimeout(() => {
-          document.getElementById("collection").scrollIntoView({ behavior: "smooth" });
-        }, 50);
-      } else if (!options.keepScroll) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }
-
-    function sizeButtonsMarkup(prefix, chosenSize = "") {
-      return `
-        <div class="size-buttons" data-size-group="${prefix}">
-          ${sizes.map(size => `
-            <button
-              type="button"
-              class="size-button ${chosenSize === size ? "selected" : ""}"
-              data-size="${size}"
-              aria-pressed="${chosenSize === size ? "true" : "false"}"
-            >${size}</button>
-          `).join("")}
-        </div>
-      `;
-    }
-
-    function colourSelectMarkup(prefix) {
-      return `
-        <label class="option-field">
-          <span>Colour</span>
-          <select id="${prefix}Colour">
-            ${colours.map(colour =>
-              `<option value="${colour}">${colour}</option>`
-            ).join("")}
-          </select>
-        </label>
-      `;
-    }
-
-    function renderProducts() {
-      const grid = document.getElementById("productGrid");
-
-      grid.innerHTML = products.map(product => `
-        <article class="product-card">
-          <div class="product-image-wrap">
-            <button class="product-open" type="button"
-              data-product="${product.id}" aria-label="View ${escapeHTML(product.name)}">
-              <img class="product-image"
-                src="${escapeHTML(product.image)}"
-                alt="${escapeHTML(product.name)}"
-                loading="lazy"
-                onerror="this.style.opacity='.15';">
-            </button>
-
-            <button class="quick-add" type="button"
-              data-quick="${product.id}"
-              aria-label="Choose options for ${escapeHTML(product.name)}">+</button>
-          </div>
-
-          <div class="product-info">
-            <h3 class="product-name">${escapeHTML(product.name)}</h3>
-            <p class="product-price">${money(product.price)}</p>
-
-            <div class="product-options-row">
-              <select aria-label="Choose size for ${escapeHTML(product.name)}"
-                id="gridSize-${product.id}">
-                <option value="">Size</option>
-                ${sizes.map(size => `<option value="${size}">${size}</option>`).join("")}
-              </select>
-
-              <button type="button" data-grid-add="${product.id}"
-                aria-label="Add ${escapeHTML(product.name)} to bag">+</button>
-            </div>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    function openProduct(id) {
-      const product = getProduct(id);
-      if (!product) return;
-
-      selectedProductId = id;
-
-      document.getElementById("productDetail").innerHTML = `
-        <button class="back-button" data-view="home" data-scroll="collection">← Back to collection</button>
-
-        <div class="product-detail-layout">
-          <img class="product-detail-image"
-            src="${escapeHTML(product.image)}"
-            alt="${escapeHTML(product.name)}">
-
-          <div class="product-detail-info">
-            <h1>${escapeHTML(product.name)}</h1>
-            <p class="detail-price">${money(product.price)}</p>
-            <p class="info-copy" style="font-size:13px">
-              An everyday RAILWAY essential, made for the journey.
-            </p>
-
-            <div class="detail-options-row">
-              ${colourSelectMarkup("detail")}
-              <div class="option-field">
-                <span>Size</span>
-                ${sizeButtonsMarkup("detail")}
-              </div>
-            </div>
-
-            <label class="option-field">
-              <span>Quantity</span>
-              <input id="detailQuantity" type="number" min="1" max="10" value="1">
-            </label>
-
-            <div class="detail-actions">
-              <button class="button" type="button" data-detail-add="${product.id}">Add to Cart</button>
-              <button class="button button-outline" type="button" data-buy-now="${product.id}">Buy It Now</button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      showView("product");
-    }
-
-    function openQuickAdd(id) {
-      openProduct(id);
-    }
-
-    function getSelectedSize(prefix) {
-      const group = document.querySelector(`[data-size-group="${prefix}"]`);
-      return group?.querySelector(".size-button.selected")?.dataset.size || "";
-    }
-
-    function getOptions(prefix) {
-      const quantityField = document.getElementById(prefix + "Quantity");
-      const quantity = Math.max(1, Math.min(10, Number(quantityField?.value || 1)));
-      const colour = document.getElementById(prefix + "Colour")?.value || "Black";
-      const size = getSelectedSize(prefix);
-      return { size, colour, quantity };
-    }
-
-    function addVariantToCart(id, options) {
-      if (!options.size) {
-        notify("Please select a size first.");
-        return false;
-      }
-
-      if (!options.colour) options.colour = "Black";
-
-      const key = `${id}|${options.size}|${options.colour}`;
-      const existing = cart.find(item => item.key === key);
-
-      if (existing) {
-        existing.quantity = Math.min(99, existing.quantity + options.quantity);
-      } else {
-        cart.push({
-          id,
-          size: options.size,
-          colour: options.colour,
-          quantity: options.quantity,
-          key
-        });
-      }
-
-      saveCart();
-      notify("Added to your bag.");
-      return true;
-    }
-
-    function handleGridAdd(id) {
-      const size = document.getElementById("gridSize-" + id)?.value || "";
-      if (!size) {
-        notify("Please choose a size first.");
-        document.getElementById("gridSize-" + id)?.focus();
+      if (!items.length) {
+        productGrid.innerHTML =
+          '<p>No products matched your search. Try another term.</p>';
         return;
       }
 
-      addVariantToCart(id, { size, colour: "Black", quantity: 1 });
+      items.forEach(product => {
+        const card = document.createElement("article");
+        card.className = "product-card";
+
+        const imageBox = document.createElement("div");
+        imageBox.className = "product-image";
+
+        const placeholder = document.createElement("div");
+        placeholder.className = "image-placeholder";
+        placeholder.innerHTML =
+          "<strong>R</strong><span>Upload product photo</span>";
+
+        const img = document.createElement("img");
+        img.alt = product.name;
+        img.loading = "lazy";
+        img.src = product.image;
+
+        img.addEventListener("error", () => {
+          img.classList.add("image-missing");
+          placeholder.classList.remove("hidden");
+        });
+
+        img.addEventListener("load", () => {
+          img.classList.remove("image-missing");
+          placeholder.classList.add("hidden");
+        });
+
+        imageBox.append(placeholder, img);
+
+        const name = document.createElement("h3");
+        name.className = "product-name";
+        name.textContent = product.name;
+
+        const subtitle = document.createElement("p");
+        subtitle.className = "product-subtitle";
+        subtitle.textContent = "Premium everyday streetwear";
+
+        const actions = document.createElement("div");
+        actions.className = "product-actions";
+
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.textContent = "Add to bag";
+        addButton.addEventListener("click", () => addToCart(product.id));
+
+        actions.appendChild(addButton);
+        card.append(imageBox, name, subtitle, actions);
+        productGrid.appendChild(card);
+      });
+    }
+
+    function addToCart(productId) {
+      const product = products.find(item => item.id === productId);
+      if (!product) return;
+
+      cart.push(product);
+      renderCart();
+
+      document.getElementById("cartNotice").textContent =
+        product.name + " added to your bag.";
+
+      document.getElementById("cartPanel").classList.add("open");
     }
 
     function renderCart() {
-      const container = document.getElementById("cartContents");
+      const cartItems = document.getElementById("cartItems");
+      document.getElementById("cartCount").textContent = cart.length;
+      cartItems.innerHTML = "";
 
-      if (!cart.length) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <h2>Your bag is empty.</h2>
-            <p>Find your next RAILWAY essential in the collection.</p>
-            <button class="button" type="button" data-view="home" data-scroll="collection">
-              Shop Collection
-            </button>
-          </div>
-        `;
+      if (cart.length === 0) {
+        cartItems.innerHTML =
+          '<p class="cart-empty">Your bag is currently empty.</p>';
         return;
       }
 
-      const itemsHTML = cart.map(item => {
-        const product = getProduct(item.id);
-        if (!product) return "";
+      cart.forEach((product, index) => {
+        const row = document.createElement("div");
+        row.className = "cart-item";
 
-        return `
-          <article class="cart-item">
-            <img src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}">
+        const title = document.createElement("span");
+        title.textContent = product.name;
 
-            <div>
-              <h3>${escapeHTML(product.name)}</h3>
-              <p>Colour: ${escapeHTML(item.colour)}</p>
-              <p>Size: ${escapeHTML(item.size)}</p>
-              <p>${money(product.price)} each</p>
-              <p><strong>${money(product.price * item.quantity)}</strong></p>
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.setAttribute("aria-label", "Remove " + product.name);
+        remove.addEventListener("click", () => {
+          cart.splice(index, 1);
+          renderCart();
+        });
 
-              <div class="cart-controls">
-                <button type="button" data-qty="${escapeHTML(item.key)}" data-delta="-1" aria-label="Decrease quantity">−</button>
-                <span>${item.quantity}</span>
-                <button type="button" data-qty="${escapeHTML(item.key)}" data-delta="1" aria-label="Increase quantity">+</button>
-                <button type="button" class="remove-button" data-remove="${escapeHTML(item.key)}">Remove</button>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join("");
-
-      const sub = subtotal();
-
-      container.innerHTML = `
-        <div class="cart-layout">
-          <div>${itemsHTML}</div>
-
-          <aside class="summary-box">
-            <h2>ORDER SUMMARY</h2>
-            <div class="summary-row"><span>Subtotal</span><span>${money(sub)}</span></div>
-            <div class="summary-row"><span>Delivery</span><span>Calculated at checkout</span></div>
-            <div class="summary-row summary-total"><span>Subtotal</span><span>${money(sub)}</span></div>
-            <p style="font-size:11px;color:var(--muted);margin-top:10px">
-              Check your items and delivery details before continuing.
-            </p>
-            <button class="button" type="button" data-view="checkout">Proceed to Checkout</button>
-            <button class="button button-outline" type="button" data-view="home" data-scroll="collection">Continue Shopping</button>
-          </aside>
-        </div>
-      `;
+        row.append(title, remove);
+        cartItems.appendChild(row);
+      });
     }
 
-    function subtotal() {
-      return cart.reduce((sum, item) => {
-        const product = getProduct(item.id);
-        return sum + (product ? product.price * item.quantity : 0);
-      }, 0);
+    /* ANNOUNCEMENT SLIDESHOW */
+
+    const announcementSlides = [
+      ...document.querySelectorAll(".announcement-slide")
+    ];
+    let announcementIndex = 0;
+    let announcementTimer;
+
+    function showAnnouncement(index) {
+      announcementIndex =
+        (index + announcementSlides.length) % announcementSlides.length;
+
+      announcementSlides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === announcementIndex);
+      });
     }
 
-    function selectedDelivery() {
-      return Number(document.querySelector('input[name="delivery"]:checked')?.value || 120);
-    }
+    function startAnnouncementTimer() {
+      clearInterval(announcementTimer);
 
-    function renderCheckout() {
-      if (!cart.length) {
-        showView("cart");
-        notify("Your bag is empty.");
-        return;
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        announcementTimer = setInterval(() => {
+          showAnnouncement(announcementIndex + 1);
+        }, 3500);
       }
-
-      const items = document.getElementById("checkoutItems");
-      items.innerHTML = cart.map(item => {
-        const product = getProduct(item.id);
-        if (!product) return "";
-
-        return `
-          <div class="summary-row">
-            <span>${escapeHTML(product.name)} · ${escapeHTML(item.size)} · ${item.quantity}×</span>
-            <span>${money(product.price * item.quantity)}</span>
-          </div>
-        `;
-      }).join("");
-
-      updateCheckoutTotals();
     }
 
-    function updateCheckoutTotals() {
-      const delivery = selectedDelivery();
-      document.getElementById("checkoutSubtotal").textContent = money(subtotal());
-      document.getElementById("deliveryAmount").textContent = money(delivery);
-      document.getElementById("checkoutTotal").textContent = money(subtotal() + delivery);
-    }
+    document.getElementById("announcementPrev").addEventListener("click", () => {
+      showAnnouncement(announcementIndex - 1);
+      startAnnouncementTimer();
+    });
 
-    function changeQuantity(key, delta) {
-      const item = cart.find(entry => entry.key === key);
-      if (!item) return;
+    document.getElementById("announcementNext").addEventListener("click", () => {
+      showAnnouncement(announcementIndex + 1);
+      startAnnouncementTimer();
+    });
 
-      item.quantity += delta;
-      if (item.quantity <= 0) {
-        cart = cart.filter(entry => entry.key !== key);
-      }
+    /* HERO SLIDESHOW */
 
-      saveCart();
-      renderCart();
-    }
+    const heroSlides = [...document.querySelectorAll(".hero-slide")];
+    const heroDots = [...document.querySelectorAll(".hero-dot")];
+    let heroIndex = 0;
+    let heroTimer;
 
-    function removeItem(key) {
-      cart = cart.filter(item => item.key !== key);
-      saveCart();
-      renderCart();
-      notify("Item removed.");
-    }
+    function showHeroSlide(index) {
+      heroIndex = (index + heroSlides.length) % heroSlides.length;
 
-    function searchProducts() {
-      const term = prompt("Search RAILWAY products:");
-      if (term === null) return;
-
-      const query = term.trim().toLowerCase();
-      const cards = [...document.querySelectorAll(".product-card")];
-      showView("home", { keepScroll: true });
-
-      cards.forEach(card => {
-        const name = card.querySelector(".product-name")?.textContent.toLowerCase() || "";
-        card.hidden = query !== "" && !name.includes(query);
+      heroSlides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === heroIndex);
       });
 
-      document.getElementById("collection").scrollIntoView({ behavior: "smooth" });
+      heroDots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === heroIndex);
+        dot.setAttribute("aria-pressed", String(i === heroIndex));
+      });
+    }
 
-      if (query && !cards.some(card => !card.hidden)) {
-        notify("No matching products found.");
+    function startHeroTimer() {
+      clearInterval(heroTimer);
+
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        heroTimer = setInterval(() => showHeroSlide(heroIndex + 1), 5500);
       }
     }
 
-    /* NAVIGATION */
-    document.addEventListener("click", event => {
-      const viewLink = event.target.closest("[data-view]");
-      const productLink = event.target.closest("[data-product]");
-      const quickButton = event.target.closest("[data-quick]");
-      const gridAdd = event.target.closest("[data-grid-add]");
-      const detailAdd = event.target.closest("[data-detail-add]");
-      const buyNow = event.target.closest("[data-buy-now]");
-      const sizeButton = event.target.closest("[data-size]");
-      const quantityButton = event.target.closest("[data-qty]");
-      const removeButton = event.target.closest("[data-remove]");
-
-      if (viewLink) {
-        event.preventDefault();
-        const view = viewLink.dataset.view;
-        const scrollToCollection = viewLink.dataset.scroll === "collection";
-        showView(view, { scrollToCollection });
-        return;
-      }
-
-      if (productLink) {
-        openProduct(productLink.dataset.product);
-        return;
-      }
-
-      if (quickButton) {
-        openQuickAdd(quickButton.dataset.quick);
-        return;
-      }
-
-      if (gridAdd) {
-        handleGridAdd(gridAdd.dataset.gridAdd);
-        return;
-      }
-
-      if (sizeButton) {
-        const group = sizeButton.closest("[data-size-group]");
-        if (group) {
-          group.querySelectorAll(".size-button").forEach(button => {
-            const selected = button === sizeButton;
-            button.classList.toggle("selected", selected);
-            button.setAttribute("aria-pressed", selected ? "true" : "false");
-          });
-        }
-        return;
-      }
-
-      if (detailAdd) {
-        const options = getOptions("detail");
-        addVariantToCart(detailAdd.dataset.detailAdd, options);
-        return;
-      }
-
-      if (buyNow) {
-        const options = getOptions("detail");
-        if (addVariantToCart(buyNow.dataset.buyNow, options)) {
-          showView("checkout");
-        }
-        return;
-      }
-
-      if (quantityButton) {
-        changeQuantity(quantityButton.dataset.qty, Number(quantityButton.dataset.delta));
-        return;
-      }
-
-      if (removeButton) {
-        removeItem(removeButton.dataset.remove);
-      }
+    document.getElementById("heroPrev").addEventListener("click", () => {
+      showHeroSlide(heroIndex - 1);
+      startHeroTimer();
     });
 
-    document.getElementById("menuButton").addEventListener("click", openMenu);
-    document.getElementById("menuClose").addEventListener("click", closeMenu);
-    document.getElementById("menuBackdrop").addEventListener("click", closeMenu);
-    document.getElementById("cartButton").addEventListener("click", () => showView("cart"));
-    document.getElementById("searchButton").addEventListener("click", searchProducts);
+    document.getElementById("heroNext").addEventListener("click", () => {
+      showHeroSlide(heroIndex + 1);
+      startHeroTimer();
+    });
+
+    heroDots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        showHeroSlide(Number(dot.dataset.slide));
+        startHeroTimer();
+      });
+    });
+
+    /* MOBILE NAVIGATION */
+
+    const drawer = document.getElementById("navigationDrawer");
+    const backdrop = document.getElementById("drawerBackdrop");
+    const menuButton = document.getElementById("menuButton");
+
+    function openDrawer() {
+      drawer.classList.add("open");
+      backdrop.classList.remove("hidden");
+      menuButton.setAttribute("aria-expanded", "true");
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      backdrop.classList.add("hidden");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+
+    menuButton.addEventListener("click", openDrawer);
+    document.getElementById("closeDrawer").addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+
+    drawer.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", closeDrawer);
+    });
 
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") closeMenu();
+      if (event.key === "Escape") closeDrawer();
     });
 
-    document.querySelectorAll('input[name="delivery"]').forEach(input => {
-      input.addEventListener("change", updateCheckoutTotals);
+    /* SEARCH */
+
+    const searchPanel = document.getElementById("searchPanel");
+
+    document.getElementById("searchButton").addEventListener("click", () => {
+      searchPanel.classList.toggle("open");
+
+      if (searchPanel.classList.contains("open")) {
+        document.getElementById("searchInput").focus();
+      }
     });
 
-   ```
-document.getElementById("checkoutForm").addEventListener("submit", async event => {
-  event.preventDefault();
+    document.getElementById("searchForm").addEventListener("submit", event => {
+      event.preventDefault();
 
-  if (!cart.length) {
-    showView("cart");
-    notify("Your bag is empty.");
-    return;
-  }
+      const query = document.getElementById("searchInput")
+        .value.trim().toLowerCase();
 
-  const form = event.currentTarget;
-  if (!form.reportValidity()) return;
+      const filtered = products.filter(product =>
+        product.name.toLowerCase().includes(query)
+      );
 
-  const button = form.querySelector('button[type="submit"]');
-  const originalText = button ? button.textContent : "";
-
-  try {
-    if (button) {
-      button.disabled = true;
-      button.textContent = "Connecting to Yoco...";
-    }
-
-    const response = await fetch("/.netlify/functions/create-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: cart.map(item => ({
-          id: item.id,
-          quantity: item.quantity
-        })),
-        delivery: document.querySelector('input[name="delivery"]:checked')?.value || "standard"
-      })
+      renderProducts(filtered);
+      document.getElementById("collection").scrollIntoView({
+        behavior: "smooth"
+      });
     });
 
-    const result = await response.json();
+    /* BAG */
 
-    if (!response.ok || !result.redirectUrl) {
-      throw new Error(result.error || "Unable to start checkout.");
-    }
+    document.getElementById("cartButton").addEventListener("click", () => {
+      document.getElementById("cartPanel").classList.toggle("open");
+    });
 
-    window.location.href = result.redirectUrl;
-  } catch (error) {
-    alert(error.message || "Checkout failed. Please try again.");
-    if (button) {
-      button.disabled = false;
-      button.textContent = originalText;
-    }
-  }
-});
+    document.getElementById("closeCart").addEventListener("click", () => {
+      document.getElementById("cartPanel").classList.remove("open");
+    });
+
+    /* CONTACT FORM
+       Change this to your real business email address before publishing. */
+
+    document.getElementById("contactForm").addEventListener("submit", event => {
+      event.preventDefault();
 
       const form = new FormData(event.currentTarget);
-      const message = [
-        "RAILWAY CUSTOMER ENQUIRY",
-        "",
-        "Name: " + form.get("name"),
-        "Order number: " + (form.get("orderNumber") || "Not provided"),
-        "Reason: " + form.get("reason"),
-        "",
-        "Message:",
+      const storeEmail = "YOUR-STORE-EMAIL@example.com";
+
+      if (storeEmail === "YOUR-STORE-EMAIL@example.com") {
+        document.getElementById("contactMessage").textContent =
+          "Before using this form, replace YOUR-STORE-EMAIL@example.com in the code with your real store email address.";
+        return;
+      }
+
+      const subject = encodeURIComponent(form.get("subject"));
+      const body = encodeURIComponent(
+        "Name: " + form.get("name") + "\n" +
+        "Email: " + form.get("email") + "\n\n" +
         form.get("message")
-      ].join("\n");
+      );
 
-      const blob = new Blob([message], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "railway-customer-enquiry.txt";
-      link.click();
-      URL.revokeObjectURL(url);
+      document.getElementById("contactMessage").textContent =
+        "Opening your email application...";
 
-      notify("Your enquiry has been prepared as a text file. It has not been sent.");
-      event.currentTarget.reset();
+      window.location.href =
+        "mailto:" + storeEmail + "?subject=" + subject + "&body=" + body;
     });
+
+    /* INITIALISE */
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    renderProducts();
-    updateBagCount();
+    renderProducts(products);
+    renderCart();
+    showAnnouncement(0);
+    showHeroSlide(0);
+    startAnnouncementTimer();
+    startHeroTimer();
   </script>
+
 </body>
 </html>
 ```
